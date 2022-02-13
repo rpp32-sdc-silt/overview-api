@@ -45,28 +45,23 @@ async function getSpecificProduct(id) {
 }
 
 async function getStyles(productId) {
-  var styleQuery = () => {
-    var res = pool.query('SELECT * FROM styles WHERE productId=$1', [productId]);
-    return res;
-  }
-
-
-  // Need to get the style ids first, then for each get the photos and skus
-  // await the styleQuery, then loop through results, query for photos and skus in parallel
-  // use Promise.all to aggegrate the data
-
-  var photoQuery = () => {
-    var res = pool.query('SELECT thumbnail_url, url FROM photos WHERE styleId', []);
-    return res;
-  }
-
-  var skusQuery = () => {
-    var res = pool.query('SELECT', []);
-  }
-
   try {
-    var [ photoResult, styleResult, skusResult ] = await Promise.all([photoQuery(), styleQuery(), skusQuery()]);
-    // var result =
+    var result = await pool.query(
+      `SELECT id AS style_id, name, original_price, sale_price, default_style AS "default?", photoResult.photos AS photos, skusResult.skus AS skus from styles
+      LEFT JOIN
+      (SELECT styleId, json_agg(json_build_object('thumbnail_url', thumbnail_url, 'url', url)) AS photos
+        FROM photos
+        WHERE styleId IN (SELECT id AS styleId FROM styles WHERE productId=$1)
+        GROUP BY styleId) AS photoResult
+      ON styles.id=photoResult.styleId
+      LEFT JOIN
+      (SELECT styleId, json_object_agg(id, json_build_object('quantity', quantity, 'size', size)) AS skus
+        FROM skus
+        WHERE styleId IN (SELECT id AS styleId FROM styles WHERE productId=$1)
+        GROUP BY styleId) AS skusResult
+      ON styles.id=skusResult.styleId
+      WHERE productId=$1`, [productId]);
+
     return result;
   } catch(err) {
     console.error(err);

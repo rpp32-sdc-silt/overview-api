@@ -73,8 +73,13 @@ CREATE TABLE photos (
       REFERENCES styles(id)
 );
 
+-- COPY photos(id, styleId, thumbnail_url, url)
+-- FROM '/mnt/c/Users/mende/Downloads/photos.csv'
+-- QUOTE E'\b'
+-- NULL 'null'
+-- CSV HEADER;
+
 COPY photos(id, styleId, thumbnail_url, url)
-FROM '/mnt/c/Users/mende/Downloads/photos.csv'
-QUOTE E'\b'
+FROM '/mnt/c/Users/mende/Downloads/photosCleaned.csv'
 NULL 'null'
 CSV HEADER;
