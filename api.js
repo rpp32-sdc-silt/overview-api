@@ -19,6 +19,7 @@ async function getProducts(pageArg, countArg) {
     return result;
   } catch (err) {
     console.error(err);
+    return err;
     // need better error handling?
   }
 }
@@ -41,6 +42,7 @@ async function getSpecificProduct(id) {
     return result;
   } catch (err) {
     console.error(err);
+    return err;
   }
 }
 
@@ -65,6 +67,7 @@ async function getStyles(productId) {
     return result;
   } catch(err) {
     console.error(err);
+    return err;
   }
 }
 
