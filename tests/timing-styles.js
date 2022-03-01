@@ -11,5 +11,5 @@ export default function () {
   var productId = Math.floor(Math.random() * (1000011 - lowerVal) + lowerVal);
 
   http.get(`http://localhost:8080/products/${productId}/styles`);
-  // sleep(1);
+  sleep(1);
 }
