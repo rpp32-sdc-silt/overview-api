@@ -19,6 +19,7 @@ async function getProducts(pageArg, countArg) {
     return result;
   } catch (err) {
     console.error(err);
+    return err;
     // need better error handling?
   }
 }
@@ -30,17 +31,21 @@ async function getSpecificProduct(id) {
   };
 
   var featuresQuery = () => {
-    var res = pool.query('SELECT feature, value from features WHERE product_id=$1', [id]);
+    var res = pool.query('SELECT feature, value FROM features WHERE product_id=$1', [id]);
     return res;
   };
 
+  // var a = Date.now();
   try {
     var [ productResult, featuresResult ]= await Promise.all([productQuery(), featuresQuery()]);
+    // var b = Date.now();
+    // console.log('b-a', b-a);
     var result = productResult.rows[0];
     result.features = featuresResult.rows;
     return result;
   } catch (err) {
     console.error(err);
+    return err;
   }
 }
 
@@ -65,6 +70,7 @@ async function getStyles(productId) {
     return result;
   } catch(err) {
     console.error(err);
+    return err;
   }
 }
 
