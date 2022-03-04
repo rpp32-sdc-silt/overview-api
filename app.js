@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const { routes } = require('./routes.js');
+require('newrelic');
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
