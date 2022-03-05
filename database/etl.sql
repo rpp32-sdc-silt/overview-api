@@ -83,3 +83,9 @@ COPY photos(id, styleId, thumbnail_url, url)
 FROM '/mnt/c/Users/mende/Downloads/photosCleaned.csv'
 NULL 'null'
 CSV HEADER;
+
+-- Performance Optimization - indexing
+CREATE INDEX features_product_id_index on features (product_id);
+CREATE INDEX styles_product_id_index on styles (productId);
+CREATE INDEX skus_style_id_index on skus (styleId);
+CREATE INDEX photos_style_id_index on photos (styleId);
