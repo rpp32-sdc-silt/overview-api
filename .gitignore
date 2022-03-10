@@ -5,3 +5,4 @@ coverage
 *.pem
 login.sh
 newrelic_agent.log
+dump.rdb

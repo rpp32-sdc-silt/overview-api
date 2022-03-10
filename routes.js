@@ -1,6 +1,13 @@
 const { getProducts, getSpecificProduct, getStyles } = require('./api.js');
+const Redis = require('redis');
+const redisClient = Redis.createClient({legacyMode: true});
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+(async () => {
+  await redisClient.connect();
+})()
 
 exports.routes = function(app) {
+
 
   app.get('/', (req, res) => {
     res.send('GET request received');
@@ -10,10 +17,18 @@ exports.routes = function(app) {
     var { page, count } = req.query;
     (async () => {
       try {
-        var result = await getProducts(page, count);
-        // can body parser help with formatting of result here?
-        // console.log(result.rows);
-        res.status(200).send(result.rows);
+        redisClient.get('products', async (err, data) => {
+          if (err) console.error(err);
+          if (data !== null) {
+            res.status(200).send(JSON.parse(data));
+          } else {
+            var result = await getProducts(page, count);
+            // can body parser help with formatting of result here?
+            // console.log(result.rows);
+            redisClient.set('products', JSON.stringify(result.rows));
+            res.status(200).send(result.rows);
+          }
+        })
       } catch(err) {
         console.error(err);
         res.status(206).send([])
@@ -22,11 +37,20 @@ exports.routes = function(app) {
   })
 
   app.get('/products/:product_id', (req, res) => {
+    var productId = req.params.product_id;
     (async () => {
       try {
-        var result = await getSpecificProduct(req.params.product_id);
-        // console.log('result: ', result);
-        res.status(200).send(result);
+        redisClient.get(`${productId}`, async (err, data) => {
+          if (err) console.error(err);
+          if (data !== null) {
+            res.status(200).send(JSON.parse(data));
+          } else {
+            var result = await getSpecificProduct(productId);
+            // console.log('result: ', result);
+            redisClient.set(`${productId}`, JSON.stringify(result))
+            res.status(200).send(result);
+          }
+        })
       } catch(err) {
         console.error(err);
         res.status(206).send({});
@@ -35,15 +59,24 @@ exports.routes = function(app) {
   })
 
   app.get('/products/:product_id/styles', (req, res) => {
+    var productId = req.params.product_id;
     (async () => {
       try {
-        var result = await getStyles(req.params.product_id);
-        var formatResult = {
-          product_id: req.params.product_id,
-          results: result.rows
-        };
-        // console.log(formatResult);
-        res.status(200).send(formatResult);
+        redisClient.get(`${productId}-styles`, async (err, data) => {
+          if (err) console.error(err);
+          if (data !== null) {
+            res.status(200).send(JSON.parse(data));
+          } else {
+            var result = await getStyles(productId);
+            var formatResult = {
+              product_id: req.params.product_id,
+              results: result.rows
+            };
+            // console.log(formatResult);
+            redisClient.set(`${productId}-styles`, JSON.stringify(formatResult))
+            res.status(200).send(formatResult);
+          }
+        })
       } catch(err) {
         console.error(err);
         res.status(206).send({});
