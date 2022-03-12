@@ -1,6 +1,7 @@
 const { getProducts, getSpecificProduct, getStyles } = require('./api.js');
 const Redis = require('redis');
 const redisClient = Redis.createClient({legacyMode: true});
+// const redisClient = Redis.createClient({legacyMode: true, url: 'redis://ubuntu@54.153.0.240:6379'});
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 (async () => {
   await redisClient.connect();
