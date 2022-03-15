@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   next();
 })
 
-app.use(express.static('/home/mhung/hackreactor/immersive/sdc-overview-api/loaderio-b24a6bdf5efe342fa743e74dca1ff600.txt'));
+app.use(express.static('public'));
 
 routes(app);
 
