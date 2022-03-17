@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest --coverage",
     "testDebug": "jest --coverage --detectOpenHandles",
-    "start": "pm2 start index.js",
+    "start": "pm2 start index.js --watch",
     "start-local": "nodemon index.js"
   },
   "repository": {
