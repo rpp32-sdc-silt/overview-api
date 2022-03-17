@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --coverage",
     "testDebug": "jest --coverage --detectOpenHandles",
-    "start": "nodemon index.js"
+    "start": "pm2 start index.js",
+    "start-local": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "express": "^4.17.2",
     "newrelic": "^8.8.0",
     "pg": "^8.7.1",
+    "pm2": "^5.2.0",
     "redis": "^4.0.4"
   },
   "devDependencies": {
