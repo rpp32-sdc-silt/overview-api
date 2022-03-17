@@ -1,7 +1,7 @@
 const { getProducts, getSpecificProduct, getStyles } = require('./api.js');
 const Redis = require('redis');
 // const redisClient = Redis.createClient({legacyMode: true});
-const redisClient = Redis.createClient({legacyMode: true, url: `redis://:${process.env.REDIS_PASS}@13.52.78.194:6379`});
+const redisClient = Redis.createClient({legacyMode: true, url: `redis://:${process.env.REDIS_PASS}@172.31.15.81:6379`});
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 (async () => {
   await redisClient.connect();
